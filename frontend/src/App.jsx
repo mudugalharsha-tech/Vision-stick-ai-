@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import NavBar        from './components/NavBar';
 import Footer        from './components/Footer';
 import { ToastContainer } from './components/Toast';
@@ -18,7 +18,7 @@ function Layout({ children }) {
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <ToastContainer />
       <Routes>
         <Route path="/"             element={<Layout><HomePage /></Layout>} />
@@ -27,6 +27,6 @@ export default function App() {
         <Route path="/detect"       element={<Layout><DashboardPage /></Layout>} />
         <Route path="*"             element={<Navigate to="/" replace />} />
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
