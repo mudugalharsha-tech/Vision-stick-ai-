@@ -6,7 +6,7 @@ const compression = require('compression');
 const mongoSanitize = require('express-mongo-sanitize');
 const morgan = require('morgan');
 
-const { connectDB } = require('./config/db');
+// const { connectDB } = require('./config/db');
 const { globalRateLimiter } = require('./middleware/rateLimiter');
 const logger = require('./config/logger');
 
@@ -76,7 +76,7 @@ app.use((err, req, res, _next) => {
 // ── Start ──────────────────────────────────────────────────
 const PORT = process.env.PORT || 5000;
 async function start() {
-  await connectDB();
+  // await connectDB(); // Database disabled for now
   app.listen(PORT, () => {
     logger.info(`VisionStick API running on port ${PORT} [${process.env.NODE_ENV}]`);
   });

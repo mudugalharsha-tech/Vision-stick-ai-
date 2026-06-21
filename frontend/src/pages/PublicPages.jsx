@@ -70,7 +70,7 @@ export function HomePage() {
       </div>
 
       {/* Quick stats */}
-      <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:10, marginBottom:20 }}>
+      <div className="stats-grid">
         {[['30+','Objects'],['≥60%','Confidence'],['6s','Cooldown']].map(([v,l])=>(
           <Card key={l} style={{ padding:'14px 8px', textAlign:'center', marginBottom:0 }}>
             <div style={{ fontSize:18, fontWeight:800, color:C.blueL, fontFamily:'monospace' }}>{v}</div>
@@ -97,17 +97,19 @@ export function HomePage() {
         Built with carefully considered constraints to provide maximum assistance without overwhelming the user.
       </p>
 
-      {[
-        {icon:'👁',t:'Real-Time Obstacle Detection',d:'AI running entirely in your browser. No data ever leaves your device.'},
-        {icon:'📍',t:'Distance Estimation',d:'Estimates proximity using spatial analysis — warns you before you encounter obstacles.'},
-        {icon:'🔊',t:'Smart Voice Guidance',d:'Speaks only when action is needed. Clear, concise, speaker-only output.'},
-      ].map(f=>(
-        <Card key={f.t}>
-          <IconBox icon={f.icon}/>
-          <div style={{ fontSize:16, fontWeight:700, color:C.text, marginBottom:6 }}>{f.t}</div>
-          <div style={{ fontSize:13, color:C.muted, lineHeight:1.6 }}>{f.d}</div>
-        </Card>
-      ))}
+      <div className="features-grid" style={{ marginBottom: 24 }}>
+        {[
+          {icon:'👁',t:'Real-Time Obstacle Detection',d:'AI running entirely in your browser. No data ever leaves your device.'},
+          {icon:'📍',t:'Distance Estimation',d:'Estimates proximity using spatial analysis — warns you before you encounter obstacles.'},
+          {icon:'🔊',t:'Smart Voice Guidance',d:'Speaks only when action is needed. Clear, concise, speaker-only output.'},
+        ].map(f=>(
+          <Card key={f.t} style={{ marginBottom: 0 }}>
+            <IconBox icon={f.icon}/>
+            <div style={{ fontSize:16, fontWeight:700, color:C.text, marginBottom:6 }}>{f.t}</div>
+            <div style={{ fontSize:13, color:C.muted, lineHeight:1.6 }}>{f.d}</div>
+          </Card>
+        ))}
+      </div>
 
       <Link to="/features" className="btn btn-secondary" style={{ textDecoration:'none', marginBottom:24 }}>
         See All Features →
@@ -139,13 +141,15 @@ export function FeaturesPage() {
       <p style={{ fontSize:13, color:C.muted, lineHeight:1.6, marginBottom:20 }}>
         Every feature is designed to maximise safety while minimising cognitive load.
       </p>
-      {feats.map(f=>(
-        <Card key={f.t}>
-          <IconBox icon={f.icon}/>
-          <div style={{ fontSize:15, fontWeight:700, color:C.text, marginBottom:6 }}>{f.t}</div>
-          <div style={{ fontSize:13, color:C.muted, lineHeight:1.6 }}>{f.d}</div>
-        </Card>
-      ))}
+      <div className="features-grid" style={{ marginBottom: 24 }}>
+        {feats.map(f=>(
+          <Card key={f.t} style={{ marginBottom: 0 }}>
+            <IconBox icon={f.icon}/>
+            <div style={{ fontSize:15, fontWeight:700, color:C.text, marginBottom:6 }}>{f.t}</div>
+            <div style={{ fontSize:13, color:C.muted, lineHeight:1.6 }}>{f.d}</div>
+          </Card>
+        ))}
+      </div>
       <Link to="/detect" className="btn btn-primary" style={{ textDecoration:'none', marginBottom:8 }}>
         Try Live Detection →
       </Link>

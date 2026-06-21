@@ -42,8 +42,15 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  max-width: 480px;
+  width: 100%;
+  max-width: 1200px;
   margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+  #root {
+    padding: 0 24px;
+  }
 }
 
 /* ── Layout ─────────────────────────────────────────────── */
@@ -57,6 +64,43 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* ── Responsive Grids ───────────────────────────────────── */
+.features-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+@media (min-width: 768px) {
+  .features-grid {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 10px;
+  margin-bottom: 20px;
+}
+@media (min-width: 768px) {
+  .stats-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+@media (min-width: 768px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
 }
 
 /* ── Scrollbar ──────────────────────────────────────────── */
@@ -309,6 +353,11 @@ body {
   grid-template-columns: 1fr 1fr;
   gap: 10px;
   margin-bottom: 12px;
+}
+@media (min-width: 768px) {
+  .stat-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
 }
 .stat-card {
   background: var(--surface);

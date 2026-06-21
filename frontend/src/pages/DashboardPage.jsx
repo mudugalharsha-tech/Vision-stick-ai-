@@ -172,13 +172,25 @@ export default function DashboardPage() {
         border: `1px solid ${isCrit ? 'rgba(250,82,82,0.45)' : C.border}`,
         background: '#0d0f14', marginBottom: 12,
         transition: 'border-color 0.3s',
+        maxWidth: 800, margin: '0 auto 12px auto',
+        aspectRatio: !running ? '16/9' : 'auto',
       }}>
         {running && <div className="scan-line"/>}
-        <video ref={videoRef} onPlaying={() => setVideoReady(true)} style={{ width:'100%', height:'100%', display:'block', objectFit:'contain' }} playsInline muted autoPlay/>
+        <video 
+          ref={videoRef} 
+          onPlaying={() => {
+            setVideoReady(true);
+            if (videoRef.current && canvasRef.current && videoRef.current.videoWidth) {
+              canvasRef.current.width = videoRef.current.videoWidth;
+              canvasRef.current.height = videoRef.current.videoHeight;
+            }
+          }} 
+          style={{ width:'100%', height:'auto', display:'block', minHeight: running ? 0 : '100%' }} 
+          playsInline muted autoPlay
+        />
         <canvas
           ref={canvasRef}
-          width={440} height={280}
-          style={{ position:'absolute', top:0, left:0, width:'100%', height:'100%', display:'block', pointerEvents:'none', objectFit:'contain' }}
+          style={{ position:'absolute', top:0, left:0, width:'100%', height:'100%', display:'block', pointerEvents:'none' }}
         />
 
         {/* Offline state */}
@@ -234,7 +246,9 @@ export default function DashboardPage() {
         {modelLoading ? 'Loading AI Model…' : running ? 'Stop Detection' : 'Start Detection'}
       </button>
 
-      {/* Environment summary */}
+      {/* Grid for desktop layout */}
+      <div className="dashboard-grid">
+        {/* Environment summary */}
       <div className="card">
         <div className="card-label">⊙ Environment Summary</div>
         <div style={{ fontSize:20, fontWeight:800, color:C.text, marginBottom:8 }}>{summary.text}</div>
@@ -342,6 +356,7 @@ export default function DashboardPage() {
           </div>
         ))}
       </div>
+      </div> {/* End dashboard-grid */}
 
       {/* Stat chips */}
       <div className="stat-grid">
