@@ -6,55 +6,77 @@ export function buildVoiceMessage(dets) {
   const rC  = !s.some(d => d.path === 'right' && d.zone !== 'MONITOR' && d.zone !== 'AWARENESS');
   const cen = s.filter(d => d.path === 'center' && d.zone !== 'MONITOR');
 
+  const getNavAdvice = () => {
+    if (lC && rC) return ' Safe to move left or right.';
+    if (lC) return ' Safe to move left.';
+    if (rC) return ' Safe to move right.';
+    return ' Stop, path blocked.';
+  };
+
+  let baseMessage = null;
+
   // Humans — highest priority
   if (top.type === 'human') {
     const n = s.filter(d => d.type === 'human').length;
     if (top.zone === 'CRITICAL') {
-      return top.path === 'center'
+      baseMessage = top.path === 'center'
         ? (n > 1 ? 'Group of people directly ahead. Stop.' : 'Person directly ahead. Stop.')
         : `Person on your ${top.path}. Caution.`;
-    }
-    if (top.zone === 'WARNING') {
-      return top.path === 'center'
+    } else if (top.zone === 'WARNING') {
+      baseMessage = top.path === 'center'
         ? (n > 1 ? 'People ahead. Slow down.' : 'Person approaching. Slow down.')
         : `Person on ${top.path} side.`;
     }
   }
 
   // Stairs
-  if (top.label === 'Stairs') {
-    if (top.zone === 'CRITICAL') return 'Steps immediately ahead. Stop and feel with foot.';
-    if (top.zone === 'WARNING')  return 'Stairs ahead. Slow down.';
+  else if (top.label === 'Stairs') {
+    if (top.zone === 'CRITICAL') baseMessage = 'Steps immediately ahead. Stop and feel with foot.';
+    else if (top.zone === 'WARNING')  baseMessage = 'Stairs ahead. Slow down.';
   }
 
   // Pothole
-  if (top.label === 'Pothole') {
-    if (top.zone === 'CRITICAL') return 'Pothole right ahead. Step carefully.';
-    if (top.zone === 'WARNING')  return 'Pothole ahead. Watch your step.';
+  else if (top.label === 'Pothole') {
+    if (top.zone === 'CRITICAL') baseMessage = 'Pothole right ahead. Step carefully.';
+    else if (top.zone === 'WARNING')  baseMessage = 'Pothole ahead. Watch your step.';
   }
 
   // Vehicles
-  if (top.type === 'vehicle') {
-    if (top.zone === 'CRITICAL') return `${top.label} very close. Stop immediately.`;
-    if (top.zone === 'WARNING')  return `${top.label} ahead.`;
+  else if (top.type === 'vehicle') {
+    if (top.zone === 'CRITICAL') baseMessage = `${top.label} very close. Stop immediately.`;
+    else if (top.zone === 'WARNING')  baseMessage = `${top.label} ahead.`;
   }
 
   // Multiple center obstacles
-  if (cen.length > 1) {
-    if (lC) return 'Obstacles ahead. Move left.';
-    if (rC) return 'Obstacles ahead. Move right.';
-    return 'Obstacles ahead. Proceed slowly.';
+  else if (cen.length > 1) {
+    if (lC) baseMessage = 'Obstacles ahead. Move left.';
+    else if (rC) baseMessage = 'Obstacles ahead. Move right.';
+    else baseMessage = 'Obstacles ahead. Proceed slowly.';
   }
 
   // Single obstacle
-  if (top.zone === 'CRITICAL' || top.zone === 'WARNING') {
+  else if (top.zone === 'CRITICAL' || top.zone === 'WARNING') {
     if (top.path === 'center') {
-      if (lC) return `${top.label} ahead. Move slightly left.`;
-      if (rC) return `${top.label} ahead. Move slightly right.`;
-      return `${top.label} ahead. Slow down.`;
+      if (lC) baseMessage = `${top.label} ahead. Move slightly left.`;
+      else if (rC) baseMessage = `${top.label} ahead. Move slightly right.`;
+      else baseMessage = `${top.label} ahead. Slow down.`;
+    } else {
+      if (top.distance <= 2) baseMessage = `${top.label} on your ${top.path}.`;
     }
-    if (top.distance <= 2) return `${top.label} on your ${top.path}.`;
   }
 
-  return null;
+  if (!baseMessage) return null;
+
+  // Append safe navigation advice if it doesn't already have 'Move' instructions
+  if (!baseMessage.includes('Move ')) {
+    if (top.path === 'center') {
+      baseMessage += getNavAdvice();
+    } else if (top.path === 'left' && rC) {
+      baseMessage += ' Safe to move right.';
+    } else if (top.path === 'right' && lC) {
+      baseMessage += ' Safe to move left.';
+    }
+  }
+
+  return baseMessage;
 }
